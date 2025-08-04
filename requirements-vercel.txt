@@ -1,0 +1,21 @@
+# Django and Web Framework
+Django==5.2.4
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+whitenoise==6.6.0
+
+# Environment and Configuration
+python-dotenv==1.0.0
+
+# Basic ML libraries (lighter versions)
+numpy==1.24.3
+pandas==2.0.3
+
+# Text processing
+textblob==0.17.1
+
+# HTTP requests
+requests==2.31.0
+
+# Utilities
+python-dateutil==2.8.2 
