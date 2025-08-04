@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DealFlowAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #4CAF50;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(102, 126, 234, 0.2);
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #4CAF50, #45a049);
+            --gradient-dark: linear-gradient(135deg, #1a1a2e, #16213e);
+            --gradient-card: linear-gradient(135deg, #f8f9fa, #ffffff);
+            --gradient-card-dark: linear-gradient(135deg, #2d3748, #4a5568);
+        }
+        
+        [data-theme="dark"] {
+            --primary-color: #8b5cf6;
+            --secondary-color: #a855f7;
+            --accent-color: #10b981;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-card: rgba(45, 55, 72, 0.95);
+            --border-color: rgba(139, 92, 246, 0.3);
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-hover: 0 15px 40px rgba(0,0,0,0.4);
+            --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            --gradient-secondary: linear-gradient(135deg, #10b981, #059669);
+            --gradient-dark: linear-gradient(135deg, #1a1a2e, #16213e);
+            --gradient-card: linear-gradient(135deg, #2d3748, #4a5568);
+            --gradient-card-dark: linear-gradient(135deg, #1a202c, #2d3748);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--gradient-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        [data-theme="dark"] .header {
+            background: rgba(26, 32, 44, 0.8);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .main-content {
+            padding: 2rem 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dashboard-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            animation: slideInUp 0.6s ease-out;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) rotateX(10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+        
+        .dashboard-section:hover {
+            transform: translateY(-5px) rotateX(2deg);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .dashboard-section h2 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+        
+        .dashboard-section p {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: var(--gradient-card);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border-left: 5px solid var(--accent-color);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.05), rgba(102, 126, 234, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chart-section {
+            margin-top: 3rem;
+        }
+        
+        .chart-container {
+            background: var(--gradient-card);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-color);
+            transform-style: preserve-3d;
+        }
+        
+        .chart-container:hover {
+            transform: translateY(-3px) rotateX(2deg);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .chart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .chart-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .chart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .chart-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .chart-value {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .table-container {
+            background: var(--gradient-card);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            transform-style: preserve-3d;
+        }
+        
+        .table-container:hover {
+            transform: translateY(-3px) rotateX(1deg);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .table-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .data-table th {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .data-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-prospecting { background: #fff3cd; color: #856404; }
+        .status-qualification { background: #d1ecf1; color: #0c5460; }
+        .status-proposal { background: #d4edda; color: #155724; }
+        .status-negotiation { background: #f8d7da; color: #721c24; }
+        .status-due_diligence { background: #e2e3e5; color: #383d41; }
+        .status-closed_won { background: #d1ecf1; color: #0c5460; }
+        .status-closed_lost { background: #f8d7da; color: #721c24; }
+        
+        [data-theme="dark"] .status-prospecting { background: #92400e; color: #fef3c7; }
+        [data-theme="dark"] .status-qualification { background: #065f46; color: #d1fae5; }
+        [data-theme="dark"] .status-proposal { background: #065f46; color: #d1fae5; }
+        [data-theme="dark"] .status-negotiation { background: #991b1b; color: #fecaca; }
+        [data-theme="dark"] .status-due_diligence { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .status-closed_won { background: #065f46; color: #d1fae5; }
+        [data-theme="dark"] .status-closed_lost { background: #991b1b; color: #fecaca; }
+        
+        .fit-score {
+            font-weight: bold;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .fit-high { background: #d4edda; color: #155724; }
+        .fit-medium { background: #fff3cd; color: #856404; }
+        .fit-low { background: #f8d7da; color: #721c24; }
+        
+        [data-theme="dark"] .fit-high { background: #065f46; color: #d1fae5; }
+        [data-theme="dark"] .fit-medium { background: #92400e; color: #fef3c7; }
+        [data-theme="dark"] .fit-low { background: #991b1b; color: #fecaca; }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #c62828;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border-left: 5px solid #c62828;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.1);
+        }
+        
+        [data-theme="dark"] .error {
+            background: linear-gradient(135deg, #991b1b, #dc2626);
+            color: #fecaca;
+            border-left: 5px solid #fecaca;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+            background: var(--gradient-card);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+        
+        .empty-state p {
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--gradient-secondary);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-secondary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .home-btn {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 40%;
+            left: 50%;
+            animation-delay: 4s;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-section {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .dashboard-section h2 {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+            
+            .data-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+    
+    <header class="header">
+        <nav class="nav container">
+            <a href="/" class="logo">DealFlowAI</a>
+            <div class="nav-links">
+                <a href="/">🏠 Home</a>
+                <a href="/thesis-analyzer/">Thesis Analyzer</a>
+                <a href="/dashboard/">Dashboard</a>
+                <a href="/admin/">Admin</a>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="dashboard-section">
+                <h2>📊 DealFlowAI Dashboard</h2>
+                <p>Comprehensive overview of your investment pipeline, thesis analysis results, and company analytics.</p>
+                
+                <div id="dashboardContent">
+                    <div class="loading">Loading dashboard data...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Theme management
+        let isDarkMode = false;
+        
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+            document.querySelector('.theme-toggle').textContent = isDarkMode ? '☀️' : '🌙';
+        }
+        
+        // Load dashboard data when page loads
+        document.addEventListener('DOMContentLoaded', loadDashboardData);
+        
+        async function loadDashboardData() {
+            const dashboardContent = document.getElementById('dashboardContent');
+            
+            try {
+                const response = await fetch('/api/dashboard-stats/');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayDashboard(data);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                dashboardContent.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Error:</strong> Failed to load dashboard data. Please try again.
+                    </div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <a href="/" class="home-btn">🏠 Go to Home</a>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayDashboard(data) {
+            const dashboardContent = document.getElementById('dashboardContent');
+            
+            let html = '';
+            
+            // Stats Grid
+            html += '<div class="stats-grid">';
+            html += `
+                <div class="stat-card">
+                    <div class="stat-number">${data.total_companies || 0}</div>
+                    <div class="stat-label">🏢 Total Companies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.total_deals || 0}</div>
+                    <div class="stat-label">💼 Total Deals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.total_theses || 0}</div>
+                    <div class="stat-label">📋 Investment Theses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${((data.thesis_summary?.avg_fit_score || 0) * 100).toFixed(1)}%</div>
+                    <div class="stat-label">📈 Avg Fit Score</div>
+                </div>
+            `;
+            html += '</div>';
+            
+            // Charts Section
+            html += '<div class="chart-section">';
+            
+            // Deal Status Breakdown
+            if (data.deal_statuses && data.deal_statuses.length > 0) {
+                html += '<div class="chart-container">';
+                html += '<div class="chart-title">📈 Deal Status Breakdown</div>';
+                data.deal_statuses.forEach(item => {
+                    const percentage = data.total_deals > 0 ? Math.round((item.count / data.total_deals) * 100) : 0;
+                    html += `
+                        <div class="chart-item">
+                            <span class="chart-label">📊 ${item.status.replace('_', ' ').toUpperCase()}</span>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="chart-value">${item.count}</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            // Industry Breakdown
+            if (data.industry_breakdown && data.industry_breakdown.length > 0) {
+                html += '<div class="chart-container">';
+                html += '<div class="chart-title">🏭 Industry Breakdown</div>';
+                data.industry_breakdown.forEach(item => {
+                    const percentage = data.total_companies > 0 ? Math.round((item.count / data.total_companies) * 100) : 0;
+                    html += `
+                        <div class="chart-item">
+                            <span class="chart-label">🏢 ${item.industry.toUpperCase()}</span>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="chart-value">${item.count}</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            // Recent Deals Table
+            if (data.recent_deals && data.recent_deals.length > 0) {
+                html += '<div class="table-container">';
+                html += '<div class="table-title">📋 Recent Deals</div>';
+                html += '<table class="data-table">';
+                html += `
+                    <thead>
+                        <tr>
+                            <th>Deal Title</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                            <th>Fit Score</th>
+                            <th>Value ($M)</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+                data.recent_deals.forEach(deal => {
+                    const fitClass = deal.fit_score >= 0.8 ? 'fit-high' : deal.fit_score >= 0.6 ? 'fit-medium' : 'fit-low';
+                    html += `
+                        <tr>
+                            <td>${deal.title}</td>
+                            <td>${deal.company_name}</td>
+                            <td><span class="status-badge status-${deal.status}">${deal.status.replace('_', ' ').toUpperCase()}</span></td>
+                            <td><span class="fit-score ${fitClass}">${(deal.fit_score * 100).toFixed(1)}%</span></td>
+                            <td>$${deal.value.toFixed(1)}M</td>
+                            <td>${deal.created_at}</td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table></div>';
+            }
+            
+            // Top Companies Table
+            if (data.top_companies && data.top_companies.length > 0) {
+                html += '<div class="table-container">';
+                html += '<div class="table-title">🏆 Top Companies by Fit Score</div>';
+                html += '<table class="data-table">';
+                html += `
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Industry</th>
+                            <th>Revenue Range</th>
+                            <th>Funding Stage</th>
+                            <th>Similarity Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+                data.top_companies.forEach(company => {
+                    html += `
+                        <tr>
+                            <td>${company.name}</td>
+                            <td>${company.industry.toUpperCase()}</td>
+                            <td>${company.revenue_range.replace('_', ' - ').toUpperCase()}</td>
+                            <td>${company.funding_stage.replace('_', ' ').toUpperCase()}</td>
+                            <td><span class="fit-score fit-high">${(company.similarity_score * 100).toFixed(1)}%</span></td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table></div>';
+            }
+            
+            // Empty state if no data
+            if ((!data.total_companies || data.total_companies === 0) && 
+                (!data.total_deals || data.total_deals === 0)) {
+                html = `
+                    <div class="empty-state">
+                        <h3>📊 No Data Available</h3>
+                        <p>Start by adding companies and creating deals to see your dashboard analytics.</p>
+                        <a href="/admin/" class="btn">🔧 Go to Admin Panel</a>
+                        <a href="/" class="home-btn" style="margin-left: 1rem;">🏠 Go to Home</a>
+                    </div>
+                `;
+            }
+            
+            dashboardContent.innerHTML = html;
+        }
+        
+        // 3D effects on scroll
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.floating-elements');
+            const speed = scrolled * 0.5;
+            parallax.style.transform = `translateY(${speed}px)`;
+        });
+    </script>
+</body>
+</html> 
