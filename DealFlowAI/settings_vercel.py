@@ -1,5 +1,5 @@
 """
-Django settings for DealFlowAI project - Vercel Production
+Django settings for DealFlowAI project - Vercel Production (Simplified)
 """
 
 from pathlib import Path
@@ -146,11 +146,6 @@ CORS_ALLOWED_ORIGINS = [
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
-
-# ML Model Configuration
-ML_MODEL_PATH = BASE_DIR / 'ml_models'
-EMBEDDING_MODEL = 'all-MiniLM-L6-v2'  # Sentence transformer model
-VECTOR_DIMENSION = 384
 
 # Logging
 LOGGING = {
