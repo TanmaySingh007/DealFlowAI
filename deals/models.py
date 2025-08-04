@@ -84,18 +84,25 @@ class Company(models.Model):
 class InvestmentThesis(models.Model):
     """Investment thesis model for storing investment criteria"""
     
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    title = models.CharField(max_length=200, blank=True)
+    text = models.TextField(blank=True, null=True)  # Main thesis text
+    description = models.TextField(blank=True)
     investment_criteria = models.JSONField(default=dict)
     target_industries = models.JSONField(default=list)
     target_revenue_ranges = models.JSONField(default=list)
     target_funding_stages = models.JSONField(default=list)
     
+    # Analysis fields
+    analysis_summary = models.TextField(blank=True)
+    extracted_criteria = models.JSONField(default=dict)
+    sentiment_score = models.FloatField(default=0.5)
+    confidence_score = models.FloatField(default=0.5)
+    
     # ML fields
     embedding_vector = models.TextField(blank=True, null=True)
     
     # Metadata
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)

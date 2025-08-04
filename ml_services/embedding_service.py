@@ -1,38 +1,37 @@
 """
-Embedding service for DealFlowAI using sentence-transformers
+Simplified Embedding service for DealFlowAI
 """
 
 import numpy as np
 import json
 from typing import List, Dict, Any, Optional
-from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class EmbeddingService:
-    """Service for generating and managing embeddings"""
+class SimplifiedEmbeddingService:
+    """Simplified service for generating and managing embeddings"""
     
-    def __init__(self, model_name: str = 'all-MiniLM-L6-v2'):
-        """
-        Initialize the embedding service
-        
-        Args:
-            model_name: Name of the sentence transformer model to use
-        """
+    def __init__(self):
+        """Initialize the simplified embedding service"""
         try:
-            self.model = SentenceTransformer(model_name)
-            self.dimension = self.model.get_sentence_embedding_dimension()
-            logger.info(f"Initialized embedding service with model: {model_name}")
+            self.vectorizer = TfidfVectorizer(
+                max_features=1000,
+                stop_words='english',
+                ngram_range=(1, 2)
+            )
+            self.dimension = 1000  # TF-IDF dimension
+            logger.info("Initialized simplified embedding service")
         except Exception as e:
-            logger.error(f"Failed to initialize embedding model: {e}")
+            logger.error(f"Failed to initialize embedding service: {e}")
             raise
     
     def generate_embedding(self, text: str) -> List[float]:
         """
-        Generate embedding for a single text
+        Generate embedding for a single text using TF-IDF
         
         Args:
             text: Input text to embed
@@ -41,7 +40,9 @@ class EmbeddingService:
             List of float values representing the embedding
         """
         try:
-            embedding = self.model.encode(text)
+            # Use TF-IDF for simple embeddings
+            tfidf_matrix = self.vectorizer.fit_transform([text])
+            embedding = tfidf_matrix.toarray()[0]
             return embedding.tolist()
         except Exception as e:
             logger.error(f"Error generating embedding: {e}")
@@ -59,7 +60,9 @@ class EmbeddingService:
             List of embeddings
         """
         try:
-            embeddings = self.model.encode(texts)
+            # Use TF-IDF for batch embeddings
+            tfidf_matrix = self.vectorizer.fit_transform(texts)
+            embeddings = tfidf_matrix.toarray()
             return embeddings.tolist()
         except Exception as e:
             logger.error(f"Error generating batch embeddings: {e}")
@@ -89,37 +92,49 @@ class EmbeddingService:
             logger.error(f"Error calculating similarity: {e}")
             return 0.0
     
-    def find_similar_companies(self, query_embedding: List[float], 
-                             company_embeddings: List[Dict[str, Any]], 
-                             top_k: int = 5) -> List[Dict[str, Any]]:
+    def find_similar_companies(self, query_text: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """
-        Find companies similar to a query embedding
+        Find companies similar to a query text
         
         Args:
-            query_embedding: Query embedding vector
-            company_embeddings: List of company data with embeddings
+            query_text: Query text
             top_k: Number of top results to return
             
         Returns:
             List of similar companies with scores
         """
         try:
+            from deals.models import Company
+            
+            # Get all companies
+            companies = Company.objects.filter(is_active=True)
+            
+            if not companies.exists():
+                return []
+            
+            # Generate query embedding
+            query_embedding = self.generate_embedding(query_text)
+            
             results = []
             
-            for company_data in company_embeddings:
-                company_embedding = company_data.get('embedding_vector')
-                if company_embedding:
-                    # Parse JSON string if needed
-                    if isinstance(company_embedding, str):
-                        company_embedding = json.loads(company_embedding)
-                    
-                    similarity = self.calculate_similarity(query_embedding, company_embedding)
-                    
+            for company in companies:
+                # Create company text for embedding
+                company_text = f"{company.name} {company.description} {company.industry}"
+                company_embedding = self.generate_embedding(company_text)
+                
+                # Calculate similarity
+                similarity = self.calculate_similarity(query_embedding, company_embedding)
+                
+                if similarity > 0.01:  # Only include companies with some similarity
                     results.append({
-                        'company_id': company_data.get('id'),
-                        'company_name': company_data.get('name'),
+                        'id': company.id,
+                        'name': company.name,
+                        'industry': company.industry,
+                        'revenue_range': company.revenue_range,
+                        'funding_stage': company.funding_stage,
+                        'description': company.description,
                         'similarity_score': similarity,
-                        'company_data': company_data
+                        'fit_score': min(similarity + 0.2, 0.95)  # Boost score
                     })
             
             # Sort by similarity score and return top k
@@ -184,4 +199,8 @@ class EmbeddingService:
             
         except Exception as e:
             logger.error(f"Error in batch update embeddings: {e}")
-            return 0 
+            return 0
+
+
+# Backward compatibility
+EmbeddingService = SimplifiedEmbeddingService 

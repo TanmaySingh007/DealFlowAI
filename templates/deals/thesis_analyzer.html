@@ -833,7 +833,23 @@
             isDarkMode = !isDarkMode;
             document.body.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
             document.querySelector('.theme-toggle').textContent = isDarkMode ? '☀️' : '🌙';
+            
+            // Store preference
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
         }
+        
+        // Initialize theme from localStorage
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            isDarkMode = savedTheme === 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.querySelector('.theme-toggle').textContent = isDarkMode ? '☀️' : '🌙';
+        }
+        
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+        });
         
         // Chatbot management
         function toggleChatbot() {
@@ -916,6 +932,30 @@
                 
                 const data = await response.json();
                 displayResults(data);
+                
+                // Refresh dashboard if it exists (for when user navigates back)
+                if (window.opener && window.opener.refreshAfterThesisAnalysis) {
+                    window.opener.refreshAfterThesisAnalysis();
+                }
+                
+                // Add success message with dashboard link
+                const successMsg = document.createElement('div');
+                successMsg.className = 'success-message';
+                successMsg.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; padding: 1rem; border-radius: 10px; margin: 1rem 0; text-align: center; font-weight: 600; border-left: 5px solid #28a745;">
+                        ✅ Thesis analysis completed! 
+                        <a href="/dashboard/" style="color: #155724; text-decoration: underline; font-weight: bold;">📊 View updated dashboard</a> to see the latest data and charts.
+                    </div>
+                `;
+                
+                // Remove any existing success message
+                const existingMsg = document.querySelector('.success-message');
+                if (existingMsg) {
+                    existingMsg.remove();
+                }
+                
+                // Add new message after results
+                document.getElementById('resultsSection').appendChild(successMsg);
                 
             } catch (error) {
                 console.error('Error:', error);

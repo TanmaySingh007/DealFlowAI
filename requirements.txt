@@ -9,6 +9,14 @@ numpy==1.24.3
 pandas==2.0.3
 scipy==1.11.1
 
+# Langchain and Advanced AI
+langchain==0.1.0
+langchain-openai==0.0.2
+langchain-community==0.0.10
+langchain-core==0.1.10
+langchain-text-splitters==0.0.1
+langchain-embeddings-openai==0.0.5
+
 # Advanced AI and Hugging Face
 transformers==4.35.0
 torch==2.1.0

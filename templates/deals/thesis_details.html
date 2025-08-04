@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Details - DealFlowAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .back-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #2980b9;
+        }
+
+        .thesis-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .thesis-text {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .thesis-text h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .thesis-text p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .analysis-summary {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .analysis-summary h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .criteria-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .criteria-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .criteria-list {
+            list-style: none;
+        }
+
+        .criteria-list li {
+            background: #fff;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .scores-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .score-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .score-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .companies-section, .deals-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .companies-grid, .deals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .company-card, .deal-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s;
+        }
+
+        .company-card:hover, .deal-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .company-name, .deal-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .company-details, .deal-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .detail-item {
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        .fit-score {
+            background: #e8f5e8;
+            color: #27ae60;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #c0392b;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .criteria-grid, .scores-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .companies-grid, .deals-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+            <h1>Thesis Analysis Details</h1>
+        </div>
+
+        <div id="thesisDetails" class="loading">
+            Loading thesis details...
+        </div>
+    </div>
+
+    <script>
+        // Get thesis ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const thesisId = urlParams.get('id');
+
+        if (!thesisId) {
+            document.getElementById('thesisDetails').innerHTML = 
+                '<div class="error">No thesis ID provided</div>';
+        } else {
+            loadThesisDetails(thesisId);
+        }
+
+        async function loadThesisDetails(thesisId) {
+            try {
+                const response = await fetch(`/api/thesis/${thesisId}/details/`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayThesisDetails(data);
+                } else {
+                    document.getElementById('thesisDetails').innerHTML = 
+                        `<div class="error">Error: ${data.error || 'Failed to load thesis details'}</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading thesis details:', error);
+                document.getElementById('thesisDetails').innerHTML = 
+                    '<div class="error">Failed to load thesis details</div>';
+            }
+        }
+
+        function displayThesisDetails(data) {
+            const container = document.getElementById('thesisDetails');
+            
+            const html = `
+                <div class="thesis-content">
+                    <div class="thesis-text">
+                        <h3>📝 Original Thesis</h3>
+                        <p>${data.text}</p>
+                    </div>
+
+                    <div class="analysis-summary">
+                        <h3>📊 Analysis Summary</h3>
+                        <p>${data.summary}</p>
+                    </div>
+
+                    <div class="criteria-grid">
+                        <div class="criteria-card">
+                            <h4>🏭 Industries</h4>
+                            <ul class="criteria-list">
+                                ${data.criteria.industries.map(industry => `<li>${industry}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="criteria-card">
+                            <h4>💰 Revenue Ranges</h4>
+                            <ul class="criteria-list">
+                                ${data.criteria.revenue_ranges.map(range => `<li>${range}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="criteria-card">
+                            <h4>🚀 Funding Stages</h4>
+                            <ul class="criteria-list">
+                                ${data.criteria.funding_stages.map(stage => `<li>${stage}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="criteria-card">
+                            <h4>🔍 Keywords</h4>
+                            <ul class="criteria-list">
+                                ${data.criteria.keywords.map(keyword => `<li>${keyword}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="scores-section">
+                        <div class="score-card">
+                            <div class="score-value">${(data.sentiment_score * 100).toFixed(1)}%</div>
+                            <div class="score-label">Sentiment Score</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-value">${(data.confidence_score * 100).toFixed(1)}%</div>
+                            <div class="score-label">Confidence Score</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-value">${data.total_companies}</div>
+                            <div class="score-label">Matching Companies</div>
+                        </div>
+                        <div class="score-card">
+                            <div class="score-value">${data.total_deals}</div>
+                            <div class="score-label">Related Deals</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="companies-section">
+                    <div class="section-title">
+                        🏢 Matching Companies (${data.matching_companies.length})
+                    </div>
+                    <div class="companies-grid">
+                        ${data.matching_companies.map(company => `
+                            <div class="company-card">
+                                <div class="company-name">${company.name}</div>
+                                <div class="company-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Industry:</span> ${company.industry}
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Revenue:</span> ${company.revenue_range}
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Stage:</span> ${company.funding_stage}
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Fit Score:</span> 
+                                        <span class="fit-score">${(company.fit_score * 100).toFixed(1)}%</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Description:</span> ${company.description}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="deals-section">
+                    <div class="section-title">
+                        💼 Related Deals (${data.related_deals.length})
+                    </div>
+                    <div class="deals-grid">
+                        ${data.related_deals.length > 0 ? data.related_deals.map(deal => `
+                            <div class="deal-card">
+                                <div class="deal-title">${deal.title}</div>
+                                <div class="deal-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Company:</span> ${deal.company_name}
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Status:</span> ${deal.status}
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span> $${deal.value.toLocaleString()}
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Fit Score:</span> 
+                                        <span class="fit-score">${(deal.fit_score * 100).toFixed(1)}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('') : '<p>No related deals found.</p>'}
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function goBack() {
+            window.location.href = '/dashboard/';
+        }
+    </script>
+</body>
+</html> 
