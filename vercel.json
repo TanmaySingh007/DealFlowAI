@@ -14,9 +14,10 @@
       "dest": "/wsgi.py"
     }
   ],
-  "functions": {
-    "wsgi.py": {
-      "runtime": "python3.12"
+  "build": {
+    "env": {
+      "PIP_TARGET": ".",
+      "PIP_UPGRADE": "true"
     }
   }
 } 

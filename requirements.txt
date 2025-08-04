@@ -4,80 +4,18 @@ djangorestframework==3.14.0
 django-cors-headers==4.3.1
 whitenoise==6.6.0
 
-# Machine Learning and AI
-scikit-learn==1.3.2
-numpy==1.24.3
-pandas==2.0.3
-scipy==1.11.1
-
-# Langchain and Advanced AI
-langchain==0.1.0
-langchain-openai==0.0.2
-langchain-community==0.0.10
-langchain-core==0.1.10
-langchain-text-splitters==0.0.1
-langchain-embeddings-openai==0.0.5
-
-# Advanced AI and Hugging Face
-transformers==4.35.0
-torch==2.1.0
-sentence-transformers==2.2.2
-huggingface-hub==0.19.4
-accelerate==0.24.1
-datasets==2.14.5
-tokenizers==0.15.0
-
-# Natural Language Processing
-spacy==3.7.2
-nltk==3.8.1
-textblob==0.17.1
-
-# Vector Database and Embeddings
-chromadb==0.4.18
-faiss-cpu==1.7.4
-pinecone-client==2.2.4
-
-# API and HTTP
-requests==2.31.0
-httpx==0.25.2
-aiohttp==3.9.1
-
 # Environment and Configuration
 python-dotenv==1.0.0
-pydantic==2.5.0
 
-# Development and Testing
-pytest==7.4.3
-pytest-django==4.7.0
+# Basic ML libraries (lighter versions)
+numpy==1.24.3
+pandas==2.0.3
 
-# Database
-psycopg2-binary==2.9.9
+# Text processing
+textblob==0.17.1
+
+# HTTP requests
+requests==2.31.0
 
 # Utilities
-python-dateutil==2.8.2
-
-# Visualization and Charts
-plotly==5.17.0
-matplotlib==3.8.2
-seaborn==0.13.0
-
-# Real-time Features
-channels==4.0.0
-channels-redis==4.1.0
-redis==5.0.1
-
-# Background Tasks
-celery==5.3.4
-django-celery-beat==2.5.0
-
-# Security and Authentication
-django-allauth==0.57.0
-django-rest-auth==0.9.5
-
-# File Handling
-Pillow==10.1.0
-python-magic==0.4.27
-
-# Monitoring and Logging
-sentry-sdk==1.38.0
-structlog==23.2.0 
+python-dateutil==2.8.2 
