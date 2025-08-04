@@ -23,7 +23,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1', 
     '0.0.0.0',
     '.vercel.app',
-    '.now.sh'
+    '.now.sh',
+    '*'
 ]
 
 # Application definition
@@ -159,5 +160,11 @@ LOGGING = {
     'root': {
         'handlers': ['console'],
         'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
     },
 } 

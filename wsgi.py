@@ -9,4 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DealFlowAI.settings_vercel')
 
 # Get the WSGI application
-application = get_wsgi_application() 
+application = get_wsgi_application()
+
+# For Vercel serverless functions
+app = application 
